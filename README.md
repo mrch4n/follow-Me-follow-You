@@ -6,9 +6,9 @@ Share your realtime location with your friends on Google Map by a simply one cli
 
 ## Screenshots
 
-![alt tag](https://raw.githubusercontent.com/mrch4n/follow-me-follow-you/screenshot/fmfu-1.png)
+![alt tag](https://github.com/mrch4n/follow-Me-follow-You/blob/master/screenshot/fmfu-1.png)
 
-![alt tag](https://raw.githubusercontent.com/mrch4n/follow-me-follow-you/screenshot/fmfu-2.png)
+![alt tag](https://github.com/mrch4n/follow-Me-follow-You/blob/master/screenshot/fmfu-2.png)
 
 ## Server Setup
 
