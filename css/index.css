@@ -1,0 +1,67 @@
+html, body{
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+}
+
+#appTitle{
+	text-align:center;
+	width:100%;
+	height:30px;
+}
+#settings{
+
+}
+#map{
+	height:auto;
+}
+
+#panelFmfu{
+	/*position:fixed;*/
+	/*left:6px;*/
+	/*bottom:7px;*/
+	/*width:96%;*/
+	/*height:70px;*/
+	border: 1px solid black;
+	background: white;
+	box-shadow: 4px -4px 15px black;
+	padding: 1px;
+}
+
+div.panelTitle{
+
+	width: 100%;
+	height: 20px;
+	border:1px solid #ffffff;
+	font-size: 20px;
+	background: #80ff80;
+	line-height:1;
+	display:block;
+
+}
+
+#myCodeBox{
+	display: block;
+}
+
+.pButton{
+	padding: 1px 6px;
+	align-items: flex-start;
+	text-align: center;
+	cursor: default;
+	color:buttontext;
+	border: 2px outset buttonface;
+	background-color: buttonface;
+	box-sizing: border-box;
+	display: inline-block;
+
+}
+
+#LocationText{
+	width: 100%;
+}
+
+.hidden{
+	display:none;
+}
