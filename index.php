@@ -1,10 +1,10 @@
 <?php
-$domainName = 'https://fmfu.myDomainName.com';
+$domainName = 'https://fmfu.yourdomain.com';
 session_start();
 if (isset($_GET["m"])){
 	$sessioncode = $_GET["m"];
 }else{
-	$sessioncode = 	session_id();
+	$sessioncode = 	substr(session_id(), -6);
 }
 ?>
 <!DOCTYPE html>
@@ -35,47 +35,49 @@ if (isset($_GET["m"])){
 			<div class="modal-content">
 				<div id="panelFmfu">
 					<div class="panelTitle">Follow Me Follow You</div>
-					<br>
-					<div class="input-group">
-						<span class="input-group-addon" id="myCode">MyCode: </span>
-						<span id="myCodeBox" type="text" class="form-control" aria-describedby="myCode">test</span>
+					<div class="container">
+						<br>
+						<div class="input-group">
+							<span class="input-group-addon" id="myCode">MyCode: </span>
+							<span id="myCodeBox" type="text" class="form-control" aria-describedby="myCode">test</span>
+						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span></button>
+							<?php
+							echo '<a class="pull-right" href="whatsapp://send?text=' .$domainName. '/?u=' .substr($sessioncode, -6). '" data-action="share/whatsapp/share"><img src="imgs/WhatsApp30x30.png" width="30" height="30" alt="WhatsApp Share!" /></a>';
+							echo '<a class="pull-right" href="http://line.me/R/msg/text/?' .$domainName. '/?u=' .substr($sessioncode, -6). '"><img src="imgs/line30x30.png" width="30" height="30" alt="LINE it!" /></a>';
+							?>
+						</div>
+
+						<br>
+						<br>
+
+						<div class="input-group">
+							<span class="input-group-addon" id="uCode">U: </span>
+							<?php
+
+							if (isset($_GET["u"])){
+								$u = $_GET["u"];
+								echo "<input id='uCodeInput' value='$u' aria-describedby='uCode' placeholder='Put your fds code here.' ></input>";
+							}else{
+								echo "<input id='uCodeInput' aria-describedby='uCode' placeholder='Put your fds code here.'></input>";
+							}
+
+							?>
+						</div>
+						<br>
+						<button id="startPButton" type="button" class="btn btn-success start pButton" onclick="startPos()">Start</button>
+						<button id="stopPButton" type="button" class="btn btn-default stop pButton" onclick="stopLocation()">Stop</button>
+						<br>
 					</div>
-					<br>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default btn-sm pull-right"><span class="glyphicon glyphicon-duplicate"></span></button>
-						<?php
-							echo '<a href="whatsapp://send?text=' .$domainName. '/?u=' .substr($sessioncode, -6). '" data-action="share/whatsapp/share"><img src="imgs/WhatsApp30x30.png" width="30" height="30" alt="WhatsApp Share!" /></a>';
-							echo '<a href="http://line.me/R/msg/text/?' .$domainName. '/?u=' .substr($sessioncode, -6). '"><img src="imgs/line30x30.png" width="30" height="30" alt="LINE it!" /></a>';
-						 ?>
-					</div>
 
-					<br>
-					<br>
-
-					<div class="input-group">
-						<span class="input-group-addon" id="uCode">Your Code: </span>
-						<?php
-
-						if (isset($_GET["u"])){
-							$u = $_GET["u"];
-							echo "<input id='uCodeInput' value='$u' aria-describedby='uCode'></input>";
-						}else{
-							echo "<input id='uCodeInput' aria-describedby='uCode'></input>";
-						}
-
-						?>
-					</div>
-					<br>
-					<button id="startPButton" type="button" class="btn btn-success start pButton" onclick="startPos()">Start</button>
-					<button id="stopPButton" type="button" class="btn btn-default stop pButton" onclick="stopLocation()">Stop</button>
-
-				</div>
+				</div><!-- id="panelFmfu" -->
 			</div>
 		</div>
 	</div>
 
 
 
-<script src="js/index.js"></script>
+	<script src="js/indexjs.js"></script>
 
 </body></html>

@@ -1,40 +1,51 @@
 <?php
 require_once 'int/conectMysql.php';
 
-$myCode = $_POST['mCode'];
-$mylatitude = $_POST['mlatitude'];
-$mylongitude = $_POST['mlongitude'];
-$uCode = $_POST['youCode'];
-
-$stmt = $conn->prepare("INSERT INTO ext_userloc (deviceId, latitude, longitude) VALUES (?,?,?)");
-
-$stmt->bind_Param("sss", $myCode, $mylatitude, $mylongitude);
-
-if($stmt->execute()){
-	// echo "sql insert success.";
-}else{
-	echo "sql insert fail.";
+if(isset($_POST['mCode']))
+{
+	$myCode = $_POST['mCode'];
 }
 
-$stmt->close();
+if(isset($_POST['mlatitude']))
+{
+	$mylatitude = $_POST['mlatitude'];
+}
 
-if ($uCode <> null) {
+if(isset($_POST['mlongitude']))
+{
+	$mylongitude = $_POST['mlongitude'];
+}
 
-	$stmt = $conn->prepare("SELECT latitude, longitude FROM ext_userloc WHERE deviceId=? ORDER BY no DESC LIMIT 1");
+if(isset($_POST['maccuracy']))
+{
+	$myaccuracy = $_POST['maccuracy'];
+}
 
-	$stmt->bind_Param("s", $uCode);
+if(isset($_POST['youCode']))
+{
+	$uCode = $_POST['youCode'];
+}
+
+if(isset($myCode)){
+	$stmt = $conn->prepare("INSERT INTO ext_userloc (deviceId, latitude, longitude, accuracy) VALUES (?,?,?,?)");
+
+	$stmt->bind_Param("ssss", $myCode, $mylatitude, $mylongitude, $myaccuracy);
 
 	$stmt->execute();
+	$stmt->close();
+}
 
-	$stmt->bind_result($lat, $long);
+if (isset($uCode)) {
 
+	$stmt = $conn->prepare("SELECT latitude, longitude, accuracy FROM ext_userloc WHERE deviceId=? ORDER BY no DESC LIMIT 1");
+	$stmt->bind_Param("s", $uCode);
+	$stmt->execute();
+	$stmt->bind_result($lat, $long, $accuracy);
 	while ($stmt->fetch()){
-		$output = array('lat' => $lat, 'lng'=> $long);
+		$output = array('lat' => $lat, 'lng'=> $long, 'accuracy' => $accuracy);
 	}
-
 	$latlong =  json_encode($output, JSON_FORCE_OBJECT);
 	echo $latlong;
-
 }
 $conn->close();
 ?>
