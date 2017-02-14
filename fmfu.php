@@ -31,21 +31,37 @@ if(isset($myCode)){
 
 	$stmt->bind_Param("ssss", $myCode, $mylatitude, $mylongitude, $myaccuracy);
 
-	$stmt->execute();
+	if($stmt->execute()){
+		// echo "sql insert success.";
+	}else{
+		// echo "sql insert fail.";
+	}
+
 	$stmt->close();
 }
 
-if (isset($uCode)) {
+if ( $uCode != '') {
 
 	$stmt = $conn->prepare("SELECT latitude, longitude, accuracy FROM ext_userloc WHERE deviceId=? ORDER BY no DESC LIMIT 1");
+
 	$stmt->bind_Param("s", $uCode);
+
 	$stmt->execute();
-	$stmt->bind_result($lat, $long, $accuracy);
-	while ($stmt->fetch()){
-		$output = array('lat' => $lat, 'lng'=> $long, 'accuracy' => $accuracy);
+
+	$stmt->store_result();
+
+	if($stmt->num_rows > 0){
+		$stmt->bind_result($lat, $long, $accuracy);
+		while ($stmt->fetch()){
+			$output = array('lat' => $lat, 'lng'=> $long, 'accuracy' => $accuracy);
+		}
+		// echo '$output: ' . $output;
+		$latlong =  json_encode($output, JSON_FORCE_OBJECT);
+
+		echo $latlong;
+
 	}
-	$latlong =  json_encode($output, JSON_FORCE_OBJECT);
-	echo $latlong;
+
 }
 $conn->close();
 ?>

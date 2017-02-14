@@ -1,3 +1,5 @@
+"use strict";
+var gMapKey = 'YOUR_GOOGLE_MAP_JAVASCRIPT_API_KEY';
 var dheight = (window.innerHeight > 0) ? window.innerHeight : scree.height;
 var watchId = {}; //global-scoped variable for stop function to work.
 var mapDiv = document.getElementById("map");
@@ -6,8 +8,10 @@ var uPosition = {};
 var myCode = document.getElementById("sessionid").innerHTML;
 var me;
 var uMarkers = [];
-var gMapKey = 'YOUR_GOOGLE_MAP_JAVASCRIPT_API_KEY';
 var queryUCode;
+var gmap;
+var highAccuracy = $('#highAccuracy').val();
+var updateFrequency = $('#updateFrequency-fill').val();
 
 document.getElementById("myCodeBox").innerHTML = myCode;
 
@@ -17,9 +21,8 @@ $("#uCodeInput").change(function(){
 
 dheight = dheight -30;
 
-class marker{
-
-  constructor(map, name, scale, location, color = '#F00'){
+var marker = class{
+  constructor(map, name, scale, location, color){
     this.map = map;
     this.name = name;
     this.scale = scale;
@@ -46,7 +49,6 @@ class marker{
       atrokeWeight: 1,
       map: this.map
     });
-
   }
 
   updateLocation(location){
@@ -88,8 +90,8 @@ function queryUpdateUCode(){
         youCode: uCode
       },
       success: function(result){
-        result = JSON.parse(result);
         if(result != ""){
+          result = JSON.parse(result);
           result = {coords:{accuracy: result.accuracy, latitude: result.lat, longitude: result.lng}};
           updateUMarkers(uCode, result);
         }
@@ -102,20 +104,37 @@ function queryUpdateUCode(){
 
 function startLocation(){
   if(navigator.geolocation){
-    this.me = new marker(gmap, "M", 20, {lat: 0, lng: 0, accuracy: 1000}, "#000");
-    var watchId = navigator.geolocation.watchPosition(updateMPosition);
-  } else{
+    me = new marker(gmap, "M", 20, {lat: 0, lng: 0, accuracy: 1000}, "#000");
+    var watchId = navigator.geolocation.watchPosition(updateMPosition,
+      function(error){
+        if(error.code == 1){
+          alert('Please enable Location Service and try again');
+          $("#startPButton").prop('disabled', false);
+        }else if(error.code == 2){
+          alert('Position is currently unavailable, please turn on WiFi and/or GPS.');
+          $("#startPButton").prop('disabled', false);
+        }else if(error.code == 3){
+          alert('Position timeout.');
+        }
+      },{
+        enableHighAccuracy : highAccuracy,
+        maximumAge : 0
+      }
+    );
+  }else{
     alert("Please enable location service or location service is not supported on your device.");
   }
   uCode = document.getElementById("uCodeInput").value;
   queryUCode = setInterval(function(){
-    queryUpdateUCode();
-  }, 5000);
+    if(uCode != ''){
+      queryUpdateUCode();
+    }
+  }, updateFrequency*1000 );
 };
 
 function updateMPosition(position){
-  this.me.updateLocation(position);
-  this.me.updateOnMap();
+  me.updateLocation(position);
+  me.updateOnMap();
   $.ajax({
     type: "POST",
     url: "fmfu.php",
@@ -126,16 +145,16 @@ function updateMPosition(position){
       youCode: uCode
     },
     success: function(result){
-      result = JSON.parse(result);
       if(result != ""){
+        result = JSON.parse(result);
         result = {coords:{accuracy: result.accuracy, latitude: result.lat, longitude: result.lng}};
         updateUMarkers(uCode, result);
       }
     },
     error: function(error){
+      console.debug("[DEBUG]121 error: ", error);
     }
   });
-
 }
 
 function updateUMarkers(uCode, uPosition){
@@ -144,7 +163,6 @@ function updateUMarkers(uCode, uPosition){
   }else{
     uMarkers[uCode].updateLocation(uPosition);
     uMarkers[uCode].updateOnMap();
-
   }
 }
 
@@ -159,4 +177,20 @@ function startPos(){
   startLocation();
 }
 
+$('#highAccuracy').change(function(){
+  highAccuracy = $('#highAccuracy').val();
+  navigator.geolocation.clearWatch(watchId);
+  clearInterval(queryUCode);
+  startLocation();
+});
+
+$('#updateFrequency-fill').change(function() {
+  $('#updateFrequency').html($('#updateFrequency-fill').val());
+  navigator.geolocation.clearWatch(watchId);
+  clearInterval(queryUCode);
+  startLocation();
+});
+
 $.getScript("https://maps.googleapis.com/maps/api/js?key="+gMapKey+"&callback=initMap");
+$('#updateFrequency').html($('#updateFrequency-fill').val());
+$('.panelFmfu').modal('show');
