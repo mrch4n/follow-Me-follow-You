@@ -1,5 +1,6 @@
 <?php
-$domainName = 'https://fmfu.yourdomain.com';
+require_once 'int/fmfu.config.php';
+$domainName = FMFU_DOMAIN;
 session_start();
 if (isset($_GET["m"])){
 	$sessioncode = $_GET["m"];
@@ -77,6 +78,6 @@ if (isset($_GET["m"])){
 			</div>
 		</div>
 	</div>
+	<?php echo "<script> var gMapKey = '" . GOOGLE_MAP_JAVASCRIPT_API . "';</script>"?>
 	<script src='js/index.js'></script>
-</body>
-</html>
+</body></html>

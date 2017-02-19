@@ -27,6 +27,8 @@ PHP, MySQL
 
 Run the fmfu.sql to create the needed database table.
 
-Google Map Javascript API Key is required. (js/index.js)
+Fill in required information and rename 'int/fmfu.config-example.php' to 'int/fmfu.config.php'
+
+Google Map Javascript API Key is required. (int/fmfu.config.php)
 
 HTTPS is required to acquire location on some browser. ( https://goo.gl/rStTGz )
