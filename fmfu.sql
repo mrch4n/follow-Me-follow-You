@@ -8,9 +8,12 @@
 CREATE TABLE `fmfu` (
   `no` bigint(20) NOT NULL,
   `deviceId` varchar(8) NOT NULL,
-  `latitude` double NOT NULL,
-  `longitude` double NOT NULL,
-  `accuracy` double DEFAULT NULL
+  `groupId` varchar(8) DEFAULT NULL,
+  `name` varchar(10) DEFAULT NULL,
+  `latitude` double DEFAULT '0',
+  `longitude` double DEFAULT '0',
+  `accuracy` double DEFAULT '0',
+  `last_seen` bigint(15) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Indexes for table `fmfu`
