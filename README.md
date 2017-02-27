@@ -5,6 +5,9 @@ No register, no login
 Share your realtime location with your friends on Google Map by a simply one click.
 
 ## Update
+2017-02-27
+- Init release of multi-peer mode.
+
 2017-02-14
 - Added 'High Accuracy' and 'Update Frequency' in settings.
 - File name corrected.

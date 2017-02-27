@@ -2,5 +2,5 @@
 .ftpignore
 .ftpconfig
 fmfu.config.php
-sass/**
-.sass-cache/**
+sass/
+.sass-cache/
