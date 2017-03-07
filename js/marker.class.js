@@ -1,3 +1,4 @@
+"use strict";
 var marker = class {
 
   constructor(map, name, scale, location, color){
@@ -107,7 +108,7 @@ var marker = class {
     this.radius.setRadius(this.accuracy);
   };
 
-  fade(fade){
+  fadeMarker(fade){
     this.mark.setOpacity(fade);
   }
 

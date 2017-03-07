@@ -110,9 +110,9 @@ function queryPeers(){
         // console.debug('removeMarkers result[key]: ', result[key]);
 
         if ( Date.now() - peers[key]['last_seen'] > 15*60000){
-          markers[key].fade(0.5);
+          markers[key].fadeMarker(0.5);
         }else{
-          markers[key].fade(1)
+          markers[key].fadeMarker(1)
         }
         //markers[key].updateInfoWindowContent(peers[key]['last_seen']);
         // console.debug( "last_seen: ", peers[key]['last_seen']);
