@@ -20,7 +20,7 @@ var peers = '{}';
 peers = JSON.parse(peers);
 console.debug('[DEBUG] peers: ', peers);
 
-
+// var marker = require('./marker.class.js');
 
 // document.getElementById("myCodeBox").innerHTML = groupid;
 
@@ -28,92 +28,6 @@ console.debug('[DEBUG] peers: ', peers);
 // console.log("[Log] myCode: "+ groupid);
 
 dheight = dheight - 40 ;
-
-var marker = class {
-
-  constructor(map, name, scale, location, color){
-    // console.debug("[DEBUG]Constructor: ", location);
-    this.map = map;
-    this.name = name;
-    this.label = name.charAt(0);
-    this.scale = scale;
-    // this.latlng = {lat: location.lat, lng: location.lng};
-    this.latlng = new google.maps.LatLng(location.lat, location.lng);
-    this.accuracy = location.accuracy;
-    this.color = color;
-    this.mark = new google.maps.Marker({
-      position: {lat: location.lat, lng: location.lng},
-      label: this.label,
-      scale: this.scale,
-      animation: google.maps.Animation.DROP,
-      map: this.map
-    });
-    this.radius = new google.maps.Circle({
-      center: this.latlng,
-      fillColor: this.color,
-      fillOpacity: 0.2,
-      radius: this.accuracy,
-      strokeColor: this.color,
-      strokeOpacity: 1.0,
-      strokePosition: google.maps.StrokePosition.INSIDE,
-      atrokeWeight: 1,
-      map: this.map
-    });
-    this.infowindow = new google.maps.InfoWindow({
-      content: '<h5>' + this.name + '</h5>'
-      // position: this.marker.getPosition(),
-      // map: this.map
-    });
-
-    // this.infowindow.open(this.map, this.marker);
-  }
-
-  // createOnMap(map){
-  //   this.marker.setMap(map);
-  //   this.radius.setMap(map);
-  // };
-  addInfowindow(infowindow, map, mark){
-    this.mark.addListener('click', function(){
-      infowindow.open(map, mark);
-    });
-  }
-
-  updateLocation(location){
-    this.latlng = {lat: location.coords.latitude, lng: location.coords.longitude};
-    this.accuracy = location.coords.accuracy;
-    // if( location.name != null){
-    //   this.name = location.name;
-    //   // this.label = this.name.charAt(0);
-    // }else{
-    //   // this.name = '';
-    // }
-    // this.name = typeof location.name !== 'undefined' ? location.name : 'M';
-  }
-
-  updateName(name){
-    this.name = name;
-    this.label = name.charAt(0);
-    this.infowindow.setContent('<h5>' + this.name + '</h5>');
-  }
-
-  updateOnMap(){
-    this.infowindow.setPosition(this.latlng);
-    // this.label = this.name.charAt(0);
-    // if(this.name != ''){
-      // this.mark.setLabel(this.label);
-    // };
-    this.mark.setPosition(this.latlng);
-    this.radius.setCenter(this.latlng);
-    this.radius.setRadius(this.accuracy);
-  };
-
-  removeFromMap(){
-    this.mark.setMap(null);
-    this.radius.setMap(null);
-  }
-
-  // aging
-}
 
 function initMap(){
   $("#map").height(dheight);
@@ -137,12 +51,14 @@ function updateMarkers(){
   for (var key in peers){
     if (!peers.hasOwnProperty(key)) continue;
     if (! (key in markers) ){
+      console.log('updateMarkers() New marker created: ', key );
       markers[key] = new marker(gmap, peers[key]["name"], 20, {lat: peers[key]["latlng"]["lat"], lng: peers[key]["latlng"]["lng"], accuracy: peers[key]["accuracy"]}, "#000");
       markers[key].addInfowindow(markers[key].infowindow, gmap, markers[key].mark);
     }else{
       uPosition = {coords:{accuracy: peers[key]["accuracy"], latitude: peers[key]["latlng"]["lat"], longitude: peers[key]["latlng"]["lng"]}};
       markers[key].updateLocation(uPosition);
       markers[key].updateName(peers[key]["name"]);
+      markers[key].updateInfoWindowContent(peers[key]["last_seen"]);
     }
     // console.debug('updateMarkers markers: ', markers);
   }
@@ -170,7 +86,8 @@ function queryPeers(){
     url: "fmfu.php",
     data: {
       action: 'queryPeers',
-      groupid: groupid
+      groupid: groupid,
+      peerid: peerid
     },
     success: function(result){
       // console.debug("[DEBUG]queryPeers success result: ", result);
@@ -178,14 +95,30 @@ function queryPeers(){
       result = JSON.parse(result);
       // console.debug("[DEBUG]queryPeers success result parased: ", result);
 
+
+
       // combine ajax result(JSON) into local 'peers'(JSON).
       $.extend(peers, result);
       // console.debug('peers: ', peers);
-
       updateNoOfPeer();
       updateMarkers();
       updateMarkersOnMap();
 
+
+      for (var key in peers){
+        if (!result.hasOwnProperty(key)) continue;
+        // console.debug('removeMarkers result[key]: ', result[key]);
+
+        if ( Date.now() - peers[key]['last_seen'] > 15*60000){
+          markers[key].fade(0.5);
+        }else{
+          markers[key].fade(1)
+        }
+        //markers[key].updateInfoWindowContent(peers[key]['last_seen']);
+        // console.debug( "last_seen: ", peers[key]['last_seen']);
+        // result[key].removeFromMap();
+        // console.debug('removeMarkers result: ', result);
+      }
     },
     error: function(error){
       // console.debug("[DEBUG]queryPeers error: ", error);
@@ -197,7 +130,7 @@ function startLocation(){
   autoClosePanelModal = true;
   highAccuracy = $('#highAccuracy').prop('checked');
   if(navigator.geolocation){
-    markers[peerid] = new marker(gmap, "", 20, {lat: 0, lng: 0, accuracy: 1000}, "#000");
+    markers[peerid] = new marker(gmap, " ", 20, {lat: 0, lng: 0, accuracy: 1000}, "#000");
     markers[peerid].addInfowindow(markers[peerid].infowindow, gmap, markers[peerid].mark);
     // console.debug('startLocation markers: ', markers);
     watchId = navigator.geolocation.watchPosition(updateLocation,

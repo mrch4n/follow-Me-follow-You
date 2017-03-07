@@ -187,6 +187,7 @@ if (isset($_GET['rg'])){
 <?php echo "<script> var gMapKey = '" . GOOGLE_MAP_JAVASCRIPT_API . "';</script>"?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.js"></script>
+<script src='js/marker.class.js'></script>
 <script src='js/index.js'></script>
 
 </body></html>
