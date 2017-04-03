@@ -16,7 +16,7 @@ if (isset($_GET['rg'])){
 <!DOCTYPE html>
 <html>
 <head>
-  <meta content="width=device-width initial-scale=1.0" name="viewport"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!--Import Google Icon Font-->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!--Import materialize.css-->
@@ -162,6 +162,7 @@ if (isset($_GET['rg'])){
   </div><!-- id="panelJoinGroup" -->
 
     <div class="row center horizontal">
+      <span><img src='imgs/loader.gif' id='positionLoader'></img></span>
       <button id="startPButton" type="button" class="btn center" onclick="startPos()"><i class="material-icons">done</i></button>
       <button id="stopPButton" type="button" class="btn center" onclick="stopLocation()"><i class="material-icons">cancel</i></button>
     </div>

@@ -1,5 +1,6 @@
 "use strict";
-var dheight = (window.outerHeight > 0) ? window.outerHeight : window.innerHeight;
+// var dheight = (window.outerHeight > 0) ? window.outerHeight : window.innerHeight;
+var dheight = window.innerHeight;
 var watchId = ''; //global-scoped variable for stop function to work.
 var mapDiv = document.getElementById("map");
 var uPosition = {};
@@ -17,6 +18,7 @@ var noOfPeer = 0;
 var divNoOfPeer = document.getElementById("noOfPeer");
 var markers = [];
 var peers = '{}';
+var mapSetCenter = 1;
 peers = JSON.parse(peers);
 console.debug('[DEBUG] peers: ', peers);
 
@@ -127,6 +129,7 @@ function queryPeers(){
 }
 
 function startLocation(){
+  $("#positionLoader").show();
   autoClosePanelModal = true;
   highAccuracy = $('#highAccuracy').prop('checked');
   if(navigator.geolocation){
@@ -166,9 +169,15 @@ function startLocation(){
 
 // updateLocation() toggled when system position update.
 function updateLocation(position){
+  $("#positionLoader").hide();
   if(autoClosePanelModal){
     $('#panelFmfu').modal('close');
     autoClosePanelModal = false;
+  }
+  if( mapSetCenter ){
+    gmap.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
+    gmap.setZoom(15);
+    mapSetCenter = 0;
   }
   markers[peerid].updateLocation(position);
   markers[peerid].updateOnMap();

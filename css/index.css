@@ -28,6 +28,10 @@ html, body{
 	box-shadow: 4px -4px 15px black;
 	padding: 1px;
 }
+#positionLoader{
+	vertical-align: middle;
+	display:none;
+}
 
 div.panelTitle{
 
