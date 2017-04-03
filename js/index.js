@@ -129,7 +129,7 @@ function queryPeers(){
 }
 
 function startLocation(){
-  $("#positionLoader").show();
+  $("#positionLoader").css('visibility', 'visible');
   autoClosePanelModal = true;
   highAccuracy = $('#highAccuracy').prop('checked');
   if(navigator.geolocation){
@@ -169,14 +169,14 @@ function startLocation(){
 
 // updateLocation() toggled when system position update.
 function updateLocation(position){
-  $("#positionLoader").hide();
+  $("#positionLoader").css('visibility', 'hidden');
   if(autoClosePanelModal){
     $('#panelFmfu').modal('close');
     autoClosePanelModal = false;
   }
   if( mapSetCenter ){
     gmap.panTo({lat: position.coords.latitude, lng: position.coords.longitude});
-    gmap.setZoom(15);
+    gmap.setZoom(14);
     mapSetCenter = 0;
   }
   markers[peerid].updateLocation(position);

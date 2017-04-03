@@ -30,7 +30,8 @@ html, body{
 }
 #positionLoader{
 	vertical-align: middle;
-	display:none;
+	/*display:none;*/
+	visibility: hidden;
 }
 
 div.panelTitle{
