@@ -1,5 +1,4 @@
 "use strict";
-// var dheight = (window.outerHeight > 0) ? window.outerHeight : window.innerHeight;
 var dheight = window.innerHeight;
 var watchId = ''; //global-scoped variable for stop function to work.
 var mapDiv = document.getElementById("map");
@@ -21,13 +20,6 @@ var peers = '{}';
 var mapSetCenter = 1;
 peers = JSON.parse(peers);
 console.debug('[DEBUG] peers: ', peers);
-
-// var marker = require('./marker.class.js');
-
-// document.getElementById("myCodeBox").innerHTML = groupid;
-
-// document.getElementById("myCodeBox").value = groupid;
-// console.log("[Log] myCode: "+ groupid);
 
 dheight = dheight - 40 ;
 
@@ -62,16 +54,13 @@ function updateMarkers(){
       markers[key].updateName(peers[key]["name"]);
       markers[key].updateInfoWindowContent(peers[key]["last_seen"]);
     }
-    // console.debug('updateMarkers markers: ', markers);
   }
 }
 
 function removeMarkers(){
   for (var key in markers){
     if (!markers.hasOwnProperty(key)) continue;
-    // console.debug('removeMarkers markers[key]: ', markers[key]);
     markers[key].removeFromMap();
-    // console.debug('removeMarkers markers: ', markers);
   }
 }
 
@@ -81,7 +70,6 @@ function updateNoOfPeer( peer ){
 }
 
 function queryPeers(){
-  // console.debug('[DEBUG]queryPeers peers: ', peers);
 
   $.ajax({
     type: "POST",
@@ -92,16 +80,10 @@ function queryPeers(){
       peerid: peerid
     },
     success: function(result){
-      // console.debug("[DEBUG]queryPeers success result: ", result);
 
       result = JSON.parse(result);
-      // console.debug("[DEBUG]queryPeers success result parased: ", result);
-
-
-
       // combine ajax result(JSON) into local 'peers'(JSON).
       $.extend(peers, result);
-      // console.debug('peers: ', peers);
       updateNoOfPeer();
       updateMarkers();
       updateMarkersOnMap();
@@ -109,21 +91,14 @@ function queryPeers(){
 
       for (var key in peers){
         if (!result.hasOwnProperty(key)) continue;
-        // console.debug('removeMarkers result[key]: ', result[key]);
-
         if ( Date.now() - peers[key]['last_seen'] > 15*60000){
           markers[key].fadeMarker(0.5);
         }else{
           markers[key].fadeMarker(1)
         }
-        //markers[key].updateInfoWindowContent(peers[key]['last_seen']);
-        // console.debug( "last_seen: ", peers[key]['last_seen']);
-        // result[key].removeFromMap();
-        // console.debug('removeMarkers result: ', result);
       }
     },
     error: function(error){
-      // console.debug("[DEBUG]queryPeers error: ", error);
     }
   });
 }
@@ -135,7 +110,6 @@ function startLocation(){
   if(navigator.geolocation){
     markers[peerid] = new marker(gmap, " ", 20, {lat: 0, lng: 0, accuracy: 1000}, "#000");
     markers[peerid].addInfowindow(markers[peerid].infowindow, gmap, markers[peerid].mark);
-    // console.debug('startLocation markers: ', markers);
     watchId = navigator.geolocation.watchPosition(updateLocation,
        function(error){
          if(error.code == 1){
@@ -156,7 +130,6 @@ function startLocation(){
          enableHighAccuracy : highAccuracy,
          maximumAge : 1// In millisecond. In case of a watchPosition(), the maximumAge refers to the first position object returned by the implementation.
        });
-    // console.debug("[DEBUG]watchId: ", watchId);
   }else{
     alert("Please enable location service or location service is not supported on your device.");
     return;
@@ -182,7 +155,6 @@ function updateLocation(position){
   markers[peerid].updateLocation(position);
   markers[peerid].updateOnMap();
 
-  // console.debug("[DEGUB]position: ", position);
   $.ajax({
     type: "POST",
     url: "fmfu.php",
@@ -213,9 +185,7 @@ function stopLocation(){
   removeMarkers();
   updateNoOfPeer(0);
 
-  // console.log("Log: Stopped");
   navigator.geolocation.clearWatch(watchId);
-  // console.log('stopLocation() watchId: ', watchId);
 }
 
 function startPos(){
@@ -266,7 +236,6 @@ function updateShareBtn(){
 
 $('#highAccuracy').change(function(){
   highAccuracy = $('#highAccuracy').prop('checked');
-  // console.debug('highAcc: ', highAccuracy + watchId);
 
   if(watchId != ''){
     navigator.geolocation.clearWatch(watchId);
@@ -289,13 +258,11 @@ $('#jgrpid').change(function() {
 $('#jgrpname').change(function(){
   name = $('#jgrpname').val();
   $('#cgrpname').val(name);
-  // console.log('#jgrpname: ', name);
 })
 
 $('#cgrpname').change(function(){
   name = $('#cgrpname').val();
   $('#jgrpname').val(name);
-  // console.log('#cgrpname: ', name);
 })
 
 $.getScript("https://maps.googleapis.com/maps/api/js?key="+gMapKey+"&callback=initMap");
@@ -325,69 +292,11 @@ $(document).ready(function(){
   $('ul.tabs').tabs();
   $('ul.tabs').tabs({
     swipeable: true
-    // onShow: function(para){
-    //   console.debug('tabs change: ', para);
-    // }
   });
   jgrpid = $('#jgrpid').val();
 
   if(jgrpid != ''){
     $('ul.tabs').tabs('select_tab', 'panelJoinGroup');
-    // $('#jgrpname').focus();
     updateShareBtn();
   }
-  // console.debug('jgrpid: ', jgrpid);
-  // document.body.webkitRequestFullscreen();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // $('#updateFrequency-fill').change(function() {
-  //   // $('#updateFrequency').html($('#updateFrequency-fill').val());
-  //   updateFrequency = $('#updateFrequency-fill').val();
-  //   console.debug('updateFrequency: ', updateFrequency + watchId);
-  //
-  //   if(watchId != ""){
-  //     navigator.geolocation.clearWatch(watchId);
-  //     clearInterval(intervalQueryPeers);
-  //     startLocation();
-  //     console.log('updateFrequency location restarted.');
-  //   };
-  // });
-
-
-
-
-
-
-
-
-
-
-
-
-  // function updateUMarkers(uCode, uPosition){
-  //   if (typeof uMarkers[uCode] === "undefined"){
-  //     uMarkers[uCode] = new marker(gmap, uCode, 1, uPosition, "#00F");
-  //     console.debug("[DEBUG]update-U-Marker created: ", uMarkers[uCode] );
-  //     // console.debug("[DEBUG]updateUMarkers jsonObject", uPosition.lat);
-  //     // console.debug("[DEBUG]updateUMarkers typeof: ", typeof(uMarkers[uCode] ));
-  //     // uMarkers[uCode].setMap(gmap);
-  //   }else{
-  //     uMarkers[uCode].updateLocation(uPosition);
-  //     uMarkers[uCode].updateOnMap();
-  //     console.debug("[DEGUB]update-U-Marker updated: ", uMarkers[uCode]);
-  //   }
-  // }
 })
